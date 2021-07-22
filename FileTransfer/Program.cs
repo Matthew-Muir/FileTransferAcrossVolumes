@@ -15,17 +15,30 @@ namespace FileTransfer
             Computer myPC = new Computer();
             string source01 = @"X:\";
             string source02 = @"Y:\";
-            string dest = @"Z:\long - Copy\aaaaaaaaaaaaaaaaaaaa\bbbbbbbbbbbbbbbbbbbb\cccccccccccccccccccc\dddddddddddddddddddd\eeeeeeeeeeeeeeeeeeee\ffffffffffffffffffff\gggggggggggggggggggg\hhhhhhhhhhhhhhhhhhhh\iiiiiiiiiiiiiiiiiiii\jjjjjjjjjjjjjjjjjjjj\kkkkkkkkkkkkkkkkkkkk\";
+            string dest = @"Z:\";
+            List<DriveInfo> listOfDrives = DriveInfo.GetDrives().ToList();
+            var srcDrive01 = listOfDrives.Where(x => x.Name == source01).ToList()[0];
+            var srcDrive02 = listOfDrives.Where(x => x.Name == source02).ToList()[0];
+            var destDrive = listOfDrives.Where(x => x.Name == dest).ToList()[0];
+            var sizeOfDataTransferGB = ((srcDrive01.TotalSize - srcDrive01.TotalFreeSpace) + (srcDrive02.TotalSize - srcDrive02.TotalFreeSpace)) / 1e+9;
+            var sizeOfSpaceAvailableGB = destDrive.AvailableFreeSpace / 1e+9;
+
+            if (sizeOfDataTransferGB < sizeOfSpaceAvailableGB)
+            {
+                //Transfer FILES to DEST. If file already exists in the destination. Then transfered file is appended with date time stamp down to milliseconds to guarntee uniqueness.
+                FileTransfer(source01, dest);
+                FileTransfer(source02, dest);
+
+                //Transfer DIRECTORIES to DEST. This is using VB
+                DirectoryTransfer(source01, dest, myPC);
+                DirectoryTransfer(source02, dest, myPC);
+            }
+            else
+            {
+                Console.WriteLine("Not enough free space available");
+            }
 
 
-
-            //Transfer FILES to DEST. If file already exists in the destination. Then transfered file is appended with date time stamp down to milliseconds to guarntee uniqueness.
-            FileTransfer(source01, dest);
-            FileTransfer(source02, dest);
-
-            //Transfer DIRECTORIES to DEST. This is using VB
-            DirectoryTransfer(source01, dest, myPC);
-            DirectoryTransfer(source02, dest, myPC);
 
         }
         public static void FileTransfer(string source, string destination)
