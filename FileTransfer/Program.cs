@@ -2,6 +2,9 @@
 using System.IO;
 using Microsoft.VisualBasic.Devices;
 using System.Security.Permissions;
+using Microsoft.VisualBasic.FileIO;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace FileTransfer
 {
@@ -29,6 +32,7 @@ namespace FileTransfer
         {
             var filesInSource = Directory.EnumerateFiles(source);
 
+
             foreach (var item in filesInSource)
             {
                 try
@@ -50,28 +54,26 @@ namespace FileTransfer
                     {
                         System.IO.File.Delete(item);
                     }
-
                 }
             }
         }
 
         public static void DirectoryTransfer(string source, string destination, Computer myPC)
         {
-            var listOfDirectories = Directory.GetDirectories(source);
+            List<string> listOfDirectories = Directory.GetDirectories(source).ToList();
+            listOfDirectories.Remove(listOfDirectories.Find(x => x.Contains("$RECYCLE.BIN")));
+            listOfDirectories.Remove(listOfDirectories.Find(x => x.Contains("System Volume Information")));
 
             foreach (var item in listOfDirectories)
             {
                 try
                 {
-                    if (!item.Contains("$RECYCLE") && !item.Contains("System Volume Information"))
-                    {
-                        myPC.FileSystem.MoveDirectory(item, destination + item.Substring(item.LastIndexOf('\\') + 1), true);
-                    }
+                    myPC.FileSystem.MoveDirectory(item, destination + item.Substring(item.LastIndexOf('\\') + 1), true);
                 }
                 catch (System.IO.IOException)
                 {
-                    
-                    FileTransfer(item, destination);
+                    Directory.Delete(destination + item.Substring(item.LastIndexOf('\\') + 1), true);
+                    myPC.FileSystem.MoveDirectory(item, destination.Substring(0, destination.IndexOf('\\') + 1) + item.Substring(item.LastIndexOf('\\') + 1), true);
                 }
             }
         }
