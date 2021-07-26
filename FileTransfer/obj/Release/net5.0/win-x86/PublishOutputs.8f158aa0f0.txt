@@ -1,0 +1,6 @@
+C:\Users\mattm\Desktop\Work\33\FileTransfer.pdb
+C:\Users\mattm\Desktop\Work\33\clrcompression.dll
+C:\Users\mattm\Desktop\Work\33\clrjit.dll
+C:\Users\mattm\Desktop\Work\33\coreclr.dll
+C:\Users\mattm\Desktop\Work\33\mscordaccore.dll
+C:\Users\mattm\Desktop\Work\33\FileTransfer.exe

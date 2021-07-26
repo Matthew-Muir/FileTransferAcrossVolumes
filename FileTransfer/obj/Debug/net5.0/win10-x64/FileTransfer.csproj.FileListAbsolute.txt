@@ -1,0 +1,1 @@
+C:\Users\mattm\source\repos\FileTransfer\FileTransfer\obj\Debug\net5.0\win10-x64\FileTransfer.csproj.AssemblyReference.cache
